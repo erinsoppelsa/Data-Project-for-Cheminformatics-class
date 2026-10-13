@@ -1,6 +1,10 @@
+PyTDC
+setuptools<82
 pandas
 numpy
-scikit-learn
 rdkit
-PyTDC
-
+scikit-learn
+matplotlib
+seaborn
+jupyter
+ipykernel
