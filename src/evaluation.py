@@ -2,13 +2,16 @@ from rdkit import Chem
 from rdkit.Chem.Scaffolds import MurckoScaffold
 
 
+"""Sacaffold function"""
+
+
 def get_scaffold(smiles):
     
     mol = Chem.MolFromSmiles(smiles)
 
     # Stop if RDKit cannot interpret the structure.
     if mol is None:
-        return None
+        return Nones
 
     # Extract the Murcko scaffold as a molecule object.
     scaffold_mol = MurckoScaffold.GetScaffoldForMol(mol)
@@ -21,3 +24,8 @@ def get_scaffold(smiles):
         return smiles
     else:
         return scaffold_smiles
+
+
+
+
+
