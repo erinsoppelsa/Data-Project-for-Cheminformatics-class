@@ -60,43 +60,27 @@ Run the notebooks in order:
 
 The notebooks save intermediate data and results in `data/processed/` and `data/splits/`. Run earlier notebooks first if those files need to be recreated.
 
-## hERG classification workflow
+## Modeling workflows and results
+
+### Aqueous solubility regression
+
+The solubility task predicts the continuous `Solubility` value from a molecule's structure.
+
+- The scaffold-based split contains 8,354 training molecules and 1,628 held-out test molecules, with Bemis–Murcko scaffolds kept disjoint.
+- The workflow computes 210 RDKit descriptors, removes descriptors with invalid or constant values, and scales features using the training data.
+- Random Forest and XGBoost are compared. A five-fold `GroupKFold` search tunes the Random Forest while keeping molecules with the same scaffold together.
+- The selected Random Forest uses 100 trees and a maximum depth of 30. Its validation RMSE is 1.107 and its held-out test RMSE is 1.105, compared with 2.360 for a mean-prediction baseline. The much lower training RMSE (0.389) indicates some remaining overfitting.
+
+### hERG classification
 
 The hERG task predicts whether a molecule is a **blocker** (`1`) or **non-blocker** (`0`).
 
-- The cleaned dataset contains 645 molecules and 439 Bemis–Murcko scaffold groups.
-- A scaffold-disjoint split produces 519 training molecules and 126 held-out test molecules.
-- The training set is evaluated with five-fold `StratifiedGroupKFold` cross-validation, keeping molecules with the same scaffold in the same fold.
-- Two molecular representations are compared:
-  - 210 RDKit numerical descriptors.
-  - 2,048-bit Morgan fingerprints with radius 2.
-- Two classifiers are evaluated with each representation:
-  - Random Forest.
-  - Support Vector Classifier (SVC).
-- Average precision is used as the primary model-selection metric because it evaluates blocker ranking across thresholds and is appropriate when class proportions are unequal. Precision, recall, F1, and ROC-AUC are also reported.
-- Missing descriptor values are imputed inside the model pipeline, using parameters learned from the training data only.
+- The cleaned dataset contains 645 molecules and 439 Bemis–Murcko scaffold groups; a scaffold-disjoint split gives 519 training and 126 test molecules.
+- Random Forest and SVC classifiers are compared using 210 RDKit descriptors and 2,048-bit Morgan fingerprints (radius 2). Five-fold `StratifiedGroupKFold` cross-validation keeps scaffolds together.
+- Average precision is the primary selection metric, with ROC-AUC, F1, precision, recall, and accuracy also reported. The selected model, SVC with RDKit descriptors, achieves 0.924 average precision, 0.882 ROC-AUC, and 0.846 F1 on the held-out test set.
+- Test metrics, predictions, and the confusion matrix are saved in `results/` alongside the cross-validation and tuning results.
 
-The selected final model is **SVC with RDKit descriptors**. On the held-out test set, it achieves:
-
-| Metric | Score |
-| --- | ---: |
-| ROC-AUC | 0.882 |
-| Average precision | 0.924 |
-| F1 | 0.846 |
-| Precision | 0.825 |
-| Recall | 0.868 |
-| Accuracy | 0.810 |
-
-The corresponding test confusion matrix contains 36 true negatives, 14 false positives, 10 false negatives, and 66 true positives. The precision–recall curve is included to show the trade-off between detecting more blockers and reducing false blocker predictions. The test set is kept untouched until model selection and final evaluation.
-
-The hERG outputs saved in `results/` are:
-
-- `herg_default_cv_results.csv`: cross-validation results before tuning.
-- `herg_tuned_cv_results.csv`: tuned cross-validation comparison.
-- `herg_best_params.json`: best hyperparameters for each model and representation.
-- `herg_test_results.csv`: final held-out test metrics.
-- `herg_test_confusion_matrix.csv`: final held-out test confusion matrix.
-- `herg_test_predictions.csv`: held-out test predictions and model scores.
+Both workflows reserve their scaffold-disjoint test sets for final evaluation. The hERG result files are `herg_default_cv_results.csv`, `herg_tuned_cv_results.csv`, `herg_best_params.json`, `herg_test_results.csv`, `herg_test_confusion_matrix.csv`, and `herg_test_predictions.csv`.
 
 ## Dependencies
 
