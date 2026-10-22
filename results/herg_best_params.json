@@ -1,0 +1,20 @@
+{
+  "RF + descriptors": {
+    "model__max_depth": 10,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 3
+  },
+  "RF + Morgan": {
+    "model__max_depth": null,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 3
+  },
+  "SVC + descriptors": {
+    "model__C": 10,
+    "model__gamma": "scale"
+  },
+  "SVC + Morgan": {
+    "model__C": 10,
+    "model__gamma": "scale"
+  }
+}

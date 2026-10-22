@@ -11,7 +11,7 @@ def get_scaffold(smiles):
 
     # Stop if RDKit cannot interpret the structure.
     if mol is None:
-        return Nones
+        return None
 
     # Extract the Murcko scaffold as a molecule object.
     scaffold_mol = MurckoScaffold.GetScaffoldForMol(mol)

@@ -19,12 +19,12 @@ The analysis uses molecular structures in SMILES format, RDKit features, and sca
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb    # Load, inspect, and clean both datasets
 │   ├── 02_regression_solubility.ipynb # Build and evaluate solubility models
-│   └── 03_classification_herG.ipynb # Split hERG data and create molecular features
+│   └── 03_classification_herG.ipynb # Build and evaluate hERG classification models
 ├── src/
 │   ├── preprocessing.py             # SMILES canonicalization
 │   ├── features.py                  # RDKit descriptors and Morgan fingerprints
 │   └── evaluation.py                # Scaffold utility
-├── results/                         # Space for final figures and tables
+├── results/                         # Saved hERG model results and predictions
 └── requirements.txt
 ```
 
@@ -56,11 +56,48 @@ Run the notebooks in order:
 
 1. `01_data_exploration.ipynb` loads the AqSolDB and hERG datasets from the Therapeutics Data Commons (TDC), checks the data, and saves cleaned CSV files under `data/processed/`.
 2. `02_regression_solubility.ipynb` creates a scaffold-based split, builds molecular features, and compares regression models, including Random Forest and XGBoost.
-3. `03_classification_herG.ipynb` creates a scaffold-based hERG split and calculates molecular descriptors and Morgan fingerprints.
+3. `03_classification_herG.ipynb` creates a scaffold-based hERG split, calculates molecular descriptors and Morgan fingerprints, compares Random Forest and SVC models, tunes their hyperparameters, and evaluates the selected model on a held-out test set.
 
 The notebooks save intermediate data and results in `data/processed/` and `data/splits/`. Run earlier notebooks first if those files need to be recreated.
+
+## hERG classification workflow
+
+The hERG task predicts whether a molecule is a **blocker** (`1`) or **non-blocker** (`0`).
+
+- The cleaned dataset contains 645 molecules and 439 Bemis–Murcko scaffold groups.
+- A scaffold-disjoint split produces 519 training molecules and 126 held-out test molecules.
+- The training set is evaluated with five-fold `StratifiedGroupKFold` cross-validation, keeping molecules with the same scaffold in the same fold.
+- Two molecular representations are compared:
+  - 210 RDKit numerical descriptors.
+  - 2,048-bit Morgan fingerprints with radius 2.
+- Two classifiers are evaluated with each representation:
+  - Random Forest.
+  - Support Vector Classifier (SVC).
+- Average precision is used as the primary model-selection metric because it evaluates blocker ranking across thresholds and is appropriate when class proportions are unequal. Precision, recall, F1, and ROC-AUC are also reported.
+- Missing descriptor values are imputed inside the model pipeline, using parameters learned from the training data only.
+
+The selected final model is **SVC with RDKit descriptors**. On the held-out test set, it achieves:
+
+| Metric | Score |
+| --- | ---: |
+| ROC-AUC | 0.882 |
+| Average precision | 0.924 |
+| F1 | 0.846 |
+| Precision | 0.825 |
+| Recall | 0.868 |
+| Accuracy | 0.810 |
+
+The corresponding test confusion matrix contains 36 true negatives, 14 false positives, 10 false negatives, and 66 true positives. The precision–recall curve is included to show the trade-off between detecting more blockers and reducing false blocker predictions. The test set is kept untouched until model selection and final evaluation.
+
+The hERG outputs saved in `results/` are:
+
+- `herg_default_cv_results.csv`: cross-validation results before tuning.
+- `herg_tuned_cv_results.csv`: tuned cross-validation comparison.
+- `herg_best_params.json`: best hyperparameters for each model and representation.
+- `herg_test_results.csv`: final held-out test metrics.
+- `herg_test_confusion_matrix.csv`: final held-out test confusion matrix.
+- `herg_test_predictions.csv`: held-out test predictions and model scores.
 
 ## Dependencies
 
 The main libraries are RDKit, pandas, NumPy, scikit-learn, XGBoost, PyTDC, and Jupyter. The complete list is in [`requirements.txt`](requirements.txt).
-
