@@ -1,20 +1,20 @@
 {
-  "Random Forest + descriptors": {
-    "max_depth": 30,
-    "n_estimators": 100
+  "RF + descriptors": {
+    "model__max_depth": 30,
+    "model__n_estimators": 100
+  },
+  "RF + Morgan": {
+    "model__max_depth": 30,
+    "model__n_estimators": 100
   },
   "XGBoost + descriptors": {
-    "learning_rate": 0.05,
-    "max_depth": 6,
-    "n_estimators": 100
-  },
-  "Random Forest + Morgan": {
-    "max_depth": 30,
-    "n_estimators": 100
+    "model__learning_rate": 0.1,
+    "model__max_depth": 6,
+    "model__n_estimators": 200
   },
   "XGBoost + Morgan": {
-    "learning_rate": 0.05,
-    "max_depth": 6,
-    "n_estimators": 100
+    "model__learning_rate": 0.1,
+    "model__max_depth": 6,
+    "model__n_estimators": 200
   }
 }

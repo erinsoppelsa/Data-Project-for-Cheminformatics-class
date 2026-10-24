@@ -24,7 +24,7 @@ The analysis uses molecular structures in SMILES format, RDKit features, and sca
 │   ├── preprocessing.py             # SMILES canonicalization
 │   ├── features.py                  # RDKit descriptors and Morgan fingerprints
 │   └── evaluation.py                # Scaffold utility
-├── results/                         # Saved hERG model results and predictions
+├── results/                         # Saved regression and hERG results and predictions
 └── requirements.txt
 ```
 
@@ -67,9 +67,10 @@ The notebooks save intermediate data and results in `data/processed/` and `data/
 The solubility task predicts the continuous `Solubility` value from a molecule's structure.
 
 - The scaffold-based split contains 8,354 training molecules and 1,628 held-out test molecules, with Bemis–Murcko scaffolds kept disjoint.
-- The workflow computes 210 RDKit descriptors, removes descriptors with invalid or constant values, and scales features using the training data.
-- Random Forest and XGBoost are compared. A five-fold `GroupKFold` search tunes the Random Forest while keeping molecules with the same scaffold together.
-- The selected Random Forest uses 100 trees and a maximum depth of 30. Its validation RMSE is 1.107 and its held-out test RMSE is 1.105, compared with 2.360 for a mean-prediction baseline. The much lower training RMSE (0.389) indicates some remaining overfitting.
+- The workflow computes 210 RDKit descriptors and 2,048-bit Morgan fingerprints. Missing descriptor values are handled inside the model pipelines, and constant features are removed using training-fold information only.
+- Random Forest and XGBoost are compared with both representations. Five-fold `GroupKFold` cross-validation keeps molecules with the same scaffold together during model selection.
+- The best validation model is XGBoost with RDKit descriptors, with a validation RMSE of approximately 1.056. Its held-out test performance is RMSE 1.037, MAE 0.707, and R² 0.807.
+- The tuned validation RMSEs are approximately 1.056 for XGBoost with descriptors, 1.109 for Random Forest with descriptors, 1.660 for XGBoost with Morgan fingerprints, and 1.786 for Random Forest with Morgan fingerprints. These results indicate that descriptor-based representations are substantially more effective than Morgan fingerprints for this solubility dataset.
 
 ### hERG classification
 
@@ -80,7 +81,9 @@ The hERG task predicts whether a molecule is a **blocker** (`1`) or **non-blocke
 - Average precision is the primary selection metric, with ROC-AUC, F1, precision, recall, and accuracy also reported. The selected model, SVC with RDKit descriptors, achieves 0.924 average precision, 0.882 ROC-AUC, and 0.846 F1 on the held-out test set.
 - Test metrics, predictions, and the confusion matrix are saved in `results/` alongside the cross-validation and tuning results.
 
-Both workflows reserve their scaffold-disjoint test sets for final evaluation. The hERG result files are `herg_default_cv_results.csv`, `herg_tuned_cv_results.csv`, `herg_best_params.json`, `herg_test_results.csv`, `herg_test_confusion_matrix.csv`, and `herg_test_predictions.csv`.
+Both workflows reserve their scaffold-disjoint test sets for final evaluation.
+
+Regression result files are `solubility_tuned_cv_results.csv`, `solubility_best_params.json`, `solubility_test_results.csv`, and `solubility_test_predictions.csv`. The hERG result files are `herg_default_cv_results.csv`, `herg_tuned_cv_results.csv`, `herg_best_params.json`, `herg_test_results.csv`, `herg_test_confusion_matrix.csv`, and `herg_test_predictions.csv`.
 
 ## Dependencies
 
