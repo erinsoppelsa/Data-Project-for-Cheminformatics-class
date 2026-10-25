@@ -1,20 +1,25 @@
 {
   "RF + descriptors": {
+    "model__class_weight": "balanced",
     "model__max_depth": 10,
     "model__max_features": "sqrt",
-    "model__min_samples_leaf": 3
+    "model__min_samples_leaf": 1
   },
   "RF + Morgan": {
+    "model__class_weight": "balanced",
     "model__max_depth": null,
     "model__max_features": "sqrt",
     "model__min_samples_leaf": 3
   },
   "SVC + descriptors": {
     "model__C": 10,
+    "model__class_weight": null,
     "model__gamma": "scale"
   },
   "SVC + Morgan": {
     "model__C": 10,
+    "model__class_weight": null,
     "model__gamma": "scale"
-  }
+  },
+  "chosen_threshold": 0.5770352499924377
 }

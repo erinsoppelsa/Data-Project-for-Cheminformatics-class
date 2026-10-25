@@ -1,5 +1,5 @@
-Model,RMSE validation,RMSE std
-XGBoost + descriptors,1.0555048946320835,0.1154712354254077
-RF + descriptors,1.1087084226232617,0.11448799084683471
-XGBoost + Morgan,1.6599335328502058,0.09336468053209178
-RF + Morgan,1.7858153713994809,0.18291701809107144
+Model,RMSE validation,RMSE std,Best parameters
+XGBoost + descriptors,1.0459937080231931,0.11135165132071112,"{'model__colsample_bytree': 0.8, 'model__learning_rate': 0.1, 'model__max_depth': 6, 'model__n_estimators': 400, 'model__subsample': 0.8}"
+RF + descriptors,1.0879528620298609,0.1107270135248832,"{'model__max_depth': None, 'model__max_features': 0.5, 'model__min_samples_leaf': 2, 'model__n_estimators': 100}"
+XGBoost + Morgan,1.6599335328502058,0.09336468053209178,"{'model__learning_rate': 0.1, 'model__max_depth': 6, 'model__n_estimators': 200}"
+RF + Morgan,1.7858153713994809,0.1829170180910715,"{'model__max_depth': 30, 'model__n_estimators': 100}"

@@ -1,6 +1,8 @@
 {
   "RF + descriptors": {
-    "model__max_depth": 30,
+    "model__max_depth": null,
+    "model__max_features": 0.5,
+    "model__min_samples_leaf": 2,
     "model__n_estimators": 100
   },
   "RF + Morgan": {
@@ -8,9 +10,11 @@
     "model__n_estimators": 100
   },
   "XGBoost + descriptors": {
+    "model__colsample_bytree": 0.8,
     "model__learning_rate": 0.1,
     "model__max_depth": 6,
-    "model__n_estimators": 200
+    "model__n_estimators": 400,
+    "model__subsample": 0.8
   },
   "XGBoost + Morgan": {
     "model__learning_rate": 0.1,

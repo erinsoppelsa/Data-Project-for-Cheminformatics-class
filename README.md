@@ -78,7 +78,7 @@ The hERG task predicts whether a molecule is a **blocker** (`1`) or **non-blocke
 
 - The cleaned dataset contains 645 molecules and 439 Bemis–Murcko scaffold groups; a scaffold-disjoint split gives 519 training and 126 test molecules.
 - Random Forest and SVC classifiers are compared using 210 RDKit descriptors and 2,048-bit Morgan fingerprints (radius 2). Five-fold `StratifiedGroupKFold` cross-validation keeps scaffolds together.
-- Average precision is the primary selection metric, with ROC-AUC, F1, precision, recall, and accuracy also reported. The selected model, SVC with RDKit descriptors, achieves 0.924 average precision, 0.882 ROC-AUC, and 0.846 F1 on the held-out test set.
+- Average precision is the primary selection metric, with ROC-AUC, F1, precision, recall, and accuracy also reported. The tuned Random Forest with RDKit descriptors is selected by cross-validated average precision (0.939). On the held-out test set, it achieves 0.926 average precision, 0.898 ROC-AUC, 0.859 F1, 0.924 precision, 0.803 recall, and 0.841 accuracy at the selected threshold of approximately 0.577. The threshold improves precision compared with the default threshold of 0.5, but reduces recall, so the operating point should be adapted to the relative cost of false positives and missed blockers.
 - Test metrics, predictions, and the confusion matrix are saved in `results/` alongside the cross-validation and tuning results.
 
 Both workflows reserve their scaffold-disjoint test sets for final evaluation.
