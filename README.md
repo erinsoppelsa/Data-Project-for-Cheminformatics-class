@@ -9,8 +9,6 @@ The analysis uses molecular structures in SMILES format, RDKit features, and sca
 
 ## Project structure
 
-```text
-.
 ├── data/
 │   ├── solubility_aqsoldb.tab       # Raw AqSolDB solubility data
 │   ├── herg.tab                     # Raw hERG data
