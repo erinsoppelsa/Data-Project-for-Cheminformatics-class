@@ -1,4 +1,4 @@
-# Cheminformatics Project
+# Cheminformatics Project by Erin Soppelsa and Regina Seca
 
 This project explores molecular data and uses machine learning to study two properties:
 
